@@ -31,17 +31,27 @@ export const AppReducer = (state, action) => {
                 }
             }
             case 'RED_EXPENSE':
-                const red_expenses = state.expenses.map((currentExp)=> {
-                    if (currentExp.name === action.payload.name && currentExp.cost - action.payload.cost >= 0) {
-                        currentExp.cost =  currentExp.cost - action.payload.cost;
-                        budget = state.budget + action.payload.cost
+                let d = 1;
+                const updatedExpenses = state.expenses.map((currentExp) => {
+                    if (
+                        currentExp.name === action.payload.name &&
+                        currentExp.cost - action.payload.cost >= 0 // Check if the expense can be reduced
+                    ) {
+                        currentExp.cost -= action.payload.cost; // Update the expense cost
+                        state.budget += action.payload.cost; // Reflect the reduced expense in the budget
+                        alert(`Expense for ${currentExp.name} updated!`);
+                    } else {
+                        if (d === 1) {
+                            alert("Cannot decrease expense below 0 £ or exceed allocated budget");
+                            d = 0;
+                        }
                     }
-                    return currentExp
-                })
+                    return currentExp;
+                });
                 action.type = "DONE";
                 return {
                     ...state,
-                    expenses: [...red_expenses],
+                    expenses: [...updatedExpenses],
                 };
             case 'DELETE_EXPENSE':
             action.type = "DONE";
@@ -78,13 +88,13 @@ export const AppReducer = (state, action) => {
 
 // 1. Sets the initial state when the app loads
 const initialState = {
-    budget: 2000,
+    budget: 0,
     expenses: [
-        { id: "Marketing", name: 'Marketing', cost: 50 },
-        { id: "Finance", name: 'Finance', cost: 300 },
-        { id: "Sales", name: 'Sales', cost: 70 },
-        { id: "Human Resource", name: 'Human Resource', cost: 40 },
-        { id: "IT", name: 'IT', cost: 500 },
+        { id: "Marketing", name: 'Marketing', cost: 0 },
+        { id: "Finance", name: 'Finance', cost: 0 },
+        { id: "Sales", name: 'Sales', cost: 0 },
+        { id: "Human Resource", name: 'Human Resource', cost: 0 },
+        { id: "IT", name: 'IT', cost: 0 },
     ],
     currency: '£'
 };
