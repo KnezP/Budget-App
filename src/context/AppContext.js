@@ -2,8 +2,39 @@ import React, { createContext, useReducer } from 'react';
 
 // 5. The reducer - this is used to update the state, based on the action
 export const AppReducer = (state, action) => {
-    let budget = 0;
+    let budget = state.budget;
     switch (action.type) {
+        case 'SUB_EXPENSES':
+    let currentCost = state.expenses.reduce((previousExp, currentExp) => {
+        if (currentExp.name === action.payload.name) {
+            return previousExp + currentExp.cost;
+        }
+        return previousExp;
+    }, 0);
+
+    currentCost -= action.payload.cost;
+
+    if (currentCost >= 0) {
+        state.expenses = state.expenses.map((currentExp) => {
+            if (currentExp.name === action.payload.name) {
+                currentExp.cost -= action.payload.cost;
+                if (currentExp.cost < 0) {
+                    currentExp.cost = 0; 
+                }
+            }
+            return currentExp;
+        });
+
+        return {
+            ...state,
+        };
+    } else {
+        alert("Cannot reduce the expense! Cost cannot go below 0");
+        return {
+            ...state,
+        };
+    }
+
         case 'ADD_EXPENSE':
             let total_budget = 0;
             total_budget = state.expenses.reduce(
@@ -31,27 +62,28 @@ export const AppReducer = (state, action) => {
                 }
             }
             case 'RED_EXPENSE':
-                let d = 1;
-                const updatedExpenses = state.expenses.map((currentExp) => {
-                    if (
-                        currentExp.name === action.payload.name &&
-                        currentExp.cost - action.payload.cost >= 0 // Check if the expense can be reduced
-                    ) {
-                        currentExp.cost -= action.payload.cost; // Update the expense cost
-                        state.budget += action.payload.cost; // Reflect the reduced expense in the budget
-                        alert(`Expense for ${currentExp.name} updated!`);
-                    } else {
-                        if (d === 1) {
-                            alert("Cannot decrease expense below 0 £ or exceed allocated budget");
-                            d = 0;
+                let d=1;
+                const red_expenses = state.expenses.map((currentExp)=> {
+                    if (currentExp.name === action.payload.name && currentExp.cost - action.payload.cost >= 0) {
+                        currentExp.cost =  currentExp.cost - action.payload.cost;
+                        budget = state.budget + action.payload.cost;
+                    }
+                    else {
+                        if(d===1){
+                        alert("Cannot decrease funds bellow 0 £");
+                        d=0;
+                        }
+
+                        return {
+                            ...state
                         }
                     }
-                    return currentExp;
+                    return currentExp
                 });
                 action.type = "DONE";
                 return {
                     ...state,
-                    expenses: [...updatedExpenses],
+                    expenses: [...red_expenses],
                 };
             case 'DELETE_EXPENSE':
             action.type = "DONE";
