@@ -62,29 +62,32 @@ export const AppReducer = (state, action) => {
                 }
             }
             case 'RED_EXPENSE':
-                let d=1;
-                const red_expenses = state.expenses.map((currentExp)=> {
-                    if (currentExp.name === action.payload.name && currentExp.cost - action.payload.cost >= 0) {
-                        currentExp.cost =  currentExp.cost - action.payload.cost;
-                        budget = state.budget + action.payload.cost;
-                    }
-                    else {
-                        if(d===1){
-                        alert("Cannot decrease funds bellow 0 £");
-                        d=0;
-                        }
-
-                        return {
-                            ...state
+                let currentCostReduction = 0;
+            
+                state.expenses = state.expenses.map((currentExp) => {
+                    if (currentExp.name === action.payload.name) {
+                        if (currentExp.cost >= action.payload.cost) {
+                            currentExp.cost -= action.payload.cost/2;
+                            currentCostReduction = action.payload.cost;
+                        } else {
+                            currentCostReduction = currentExp.cost;
+                            currentExp.cost = 0;
                         }
                     }
-                    return currentExp
+                    return currentExp;
                 });
-                action.type = "DONE";
-                return {
-                    ...state,
-                    expenses: [...red_expenses],
-                };
+            
+                if (currentCostReduction > 0) {
+                    return {
+                        ...state,
+                    };
+                } else {
+                    alert("Cannot reduce the expense! Cost cannot go below 0");
+                    return {
+                        ...state,
+                    };
+                }
+            
             case 'DELETE_EXPENSE':
             action.type = "DONE";
             state.expenses.map((currentExp)=> {
