@@ -11,6 +11,7 @@ import Remaining from './components/Remaining';
 
 
 import { AppProvider } from './context/AppContext';
+import CurrencySelector from './components/CurrencySelector';
 
 const App = () => {
     return (
@@ -33,6 +34,11 @@ const App = () => {
                         {
                     <div className='col-sm'>
                     <ExpenseTotal />
+                    </div>
+                    }
+                    {
+                    <div className='col-sm'>
+                    <CurrencySelector />
                     </div>
                         }        
                       <div className='row mt-3'>
