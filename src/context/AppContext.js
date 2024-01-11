@@ -62,33 +62,26 @@ export const AppReducer = (state, action) => {
                 }
             }
             case 'RED_EXPENSE':
-                let currentCostReduction = 0;
+                const { name, cost } = action.payload;
             
-                state.expenses = state.expenses.map((currentExp) => {
-                    if (currentExp.name === action.payload.name) {
-                        if (currentExp.cost >= action.payload.cost) {
-                            currentExp.cost -= action.payload.cost/2;
-                            currentCostReduction = action.payload.cost;
+                const updatedExpenses = state.expenses.map((currentExp) => {
+                    if (currentExp.name === name) {
+                        if (currentExp.cost >= cost) {
+                            currentExp.cost -= cost / 2;
+                            currentExp.cost = Math.max(currentExp.cost, 0);
                         } else {
-                            currentCostReduction = currentExp.cost;
-                            currentExp.cost = 0;
+                            alert(`Cannot reduce the expense! Cost cannot go below ${cost}`);
                         }
                     }
                     return currentExp;
                 });
             
-                if (currentCostReduction > 0) {
-                    return {
-                        ...state,
-                    };
-                } else {
-                    alert("Cannot reduce the expense! Cost cannot go below 0");
-                    return {
-                        ...state,
-                    };
-                }
+                return {
+                    ...state,
+                    expenses: updatedExpenses,
+                };
             
-            case 'DELETE_EXPENSE':
+            case 'DELETE_EXPENSE':  
             action.type = "DONE";
             state.expenses.map((currentExp)=> {
                 if (currentExp.name === action.payload) {
