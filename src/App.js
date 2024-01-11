@@ -12,6 +12,7 @@ import Remaining from './components/Remaining';
 
 import { AppProvider } from './context/AppContext';
 import CurrencySelector from './components/CurrencySelector';
+import {CurrencyProvider} from './components/CurrencyContext';
 
 const App = () => {
     return (
@@ -19,6 +20,8 @@ const App = () => {
             <div className='container'>
                 <h1 className='mt-3'>Company's Budget Allocation</h1>
                     <div className='row mt-3'>
+                    { 
+                        <CurrencyProvider>
                         {
                      <div className='col-sm'>
                         <Budget />
@@ -35,12 +38,10 @@ const App = () => {
                     <div className='col-sm'>
                     <ExpenseTotal />
                     </div>
-                    }
-                    {
+                    }    
                     <div className='col-sm'>
-                    <CurrencySelector />
-                    </div>
-                        }        
+                        <CurrencySelector />
+                        </div> 
                       <div className='row mt-3'>
                         {
                             <div className='col-sm'>
@@ -52,8 +53,9 @@ const App = () => {
                             <div className='col-sm'>
                                 <AllocationForm />
                             </div>
-                        }        
-
+                        }  
+                        </CurrencyProvider>      
+                    }
                 </div>
             </div>
         </AppProvider>

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { useCurrency } from './CurrencyContext';
 
-const CurrencySelector = ({ currentCurrency, onCurrencyChange }) => {
+const CurrencySelector = () => {
+  const { currentCurrency, setCurrency } = useCurrency();
+
   const currencies = [
     { symbol: '$', display: 'Dollar $' },
     { symbol: '€', display: 'Euro €' },
@@ -8,14 +11,16 @@ const CurrencySelector = ({ currentCurrency, onCurrencyChange }) => {
     { symbol: '₹', display: 'Rupee ₹' },
   ];
 
-  const [selectedDisplay, setSelectedDisplay] = useState(`Currency${currentCurrency ? ` - ${currentCurrency}` : ''}`);
+  const [selectedDisplay, setSelectedDisplay] = useState(
+    `Currency${currentCurrency ? ` - ${currentCurrency}` : ''}`
+  );
 
   const handleCurrencyChange = (e) => {
     const newCurrency = e.target.value;
     const foundCurrency = currencies.find((currency) => currency.symbol === newCurrency);
     if (foundCurrency) {
       setSelectedDisplay(`Currency - ${foundCurrency.display}`);
-      onCurrencyChange(newCurrency);
+      setCurrency(newCurrency);
     }
   };
 
