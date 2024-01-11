@@ -25,7 +25,7 @@ const CurrencySelector = () => {
   };
 
   return (
-    <div>
+    <div className='alert alert-secondary'>
       <select
         id="currency"
         value=""
